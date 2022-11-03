@@ -1,3 +1,5 @@
+package pl.psi;
+
 import lombok.*;
 
 @EqualsAndHashCode

@@ -32,7 +32,7 @@ public class CreatureTest {
                         new Creature(CreatureStats.builder().hp(100).damage(Range.closed(0, 0)).build()), 89),//
                 Arguments.of(new Creature(CreatureStats.builder().hp(1).damage(Range.closed(10, 10)).build()),//
                         new Creature(CreatureStats.builder().hp(100).armor(4).damage(Range.closed(0, 0)).build()), 91),
-                Arguments.of(new Creature(CreatureStats.builder().hp(1).damage(Range.closed(0, 10)).build()),//
+                Arguments.of(new Creature(CreatureStats.builder().hp(1).damage(Range.closed(10, 10)).build()),//
                         new Creature(CreatureStats.builder().hp(100).damage(Range.closed(0, 0)).build()), 90)//
         );
     }
@@ -42,10 +42,10 @@ public class CreatureTest {
         Random randomMock = mock(Random.class);
         when(randomMock.nextDouble()).thenReturn(0.3);
         Creature attacker = new Creature(CreatureStats.builder().hp(100).damage(Range.closed(0, 0)).build());
-        Creature defender = new Creature(CreatureStats.builder().hp(100).damage(Range.closed(0, 10)).build(), randomMock);
+        Creature defender = new Creature(CreatureStats.builder().hp(100).damage(Range.closed(0, 10)).build(), new DefaultDamageCalculator(randomMock));
         //when
         attacker.attack(defender);
         //then
-        assertThat(attacker.getHp()).isEqualTo(90);
+        assertThat(attacker.getHp()).isEqualTo(97);
     }
 }

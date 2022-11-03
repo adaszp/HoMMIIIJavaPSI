@@ -1,3 +1,5 @@
+package pl.psi;
+
 import org.junit.jupiter.api.Test;
 
 import java.util.HashSet;
@@ -17,7 +19,7 @@ public class X {
     }
 
     @Test
-    void point(){
+    void point() {
         Point point1 = new Point(0, 0);
         Point point2 = new Point(0, 0);
         Point copyPoint1 = point1;
@@ -41,12 +43,12 @@ public class X {
     }
 
     @Test
-    void segment(){
-        Point s1p1 = new Point(0,0);
-        Point s1p2 = new Point(5,0);
+    void segment() {
+        Point s1p1 = new Point(0, 0);
+        Point s1p2 = new Point(5, 0);
         Segment s1 = new Segment(s1p1, s1p2);
 
-        Point s2p1 = new Point(0,0);
+        Point s2p1 = new Point(0, 0);
         Point s2p2 = new Point(s1p2);
         Segment s2 = new Segment(s2p1, s2p2);
 

@@ -1,6 +1,6 @@
-import lombok.*;
+package pl.psi;
 
-import java.util.Objects;
+import lombok.*;
 
 @Getter
 @Setter

@@ -1,52 +1,46 @@
 package pl.psi.creatures;
 
 import com.google.common.collect.Range;
+import lombok.AccessLevel;
+import lombok.Getter;
+import lombok.Setter;
+import pl.psi.GameEngine;
 
-import java.util.Random;
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
 
-public class Creature {
+public class Creature implements PropertyChangeListener {
+    @Getter
     private CreatureStats stats;
+    @Setter(AccessLevel.PACKAGE)
+    @Getter
     private int currentHp;
-    private final Random rand;
+    private final DamageCalculateStrategyIf damageCalculator;
 
     public Creature(CreatureStats aStats) {
-        this(aStats, new Random());
+        this(aStats, new DefaultDamageCalculator());
     }
 
-    Creature(CreatureStats aStats, Random aRand) {
+    Creature(CreatureStats aStats, DamageCalculateStrategyIf aDamageCalc) {
         stats = aStats;
-        currentHp = stats.getHp();
-        rand = aRand;
+        currentHp = stats != null ? stats.getHp() : 1;
+        damageCalculator = aDamageCalc;
     }
 
     public void attack(Creature aDefender) {
-        int dmgToDeal = calculateDamage(aDefender);
+        int dmgToDeal = damageCalculator.calculateDamage(this, aDefender);
         aDefender.receiveDmg(dmgToDeal);
 
         aDefender.counterAttack(this);
     }
 
     private void receiveDmg(int dmgToDeal) {
-        currentHp = currentHp - dmgToDeal;
+        setCurrentHp(getCurrentHp() - dmgToDeal);
     }
 
     private void counterAttack(Creature aDefender) {
-        int dmgToDeal = calculateDamage(aDefender);
+        int dmgToDeal = damageCalculator.calculateDamage(this, aDefender);
         aDefender.receiveDmg(dmgToDeal);
-    }
-
-    private int calculateDamage(Creature defender) {
-        double randValue = rand.nextDouble();
-        double dmg = randValue * (getDamage().upperEndpoint() - getDamage().lowerEndpoint()) + getDamage().lowerEndpoint();
-
-        double factor = 1;
-        if (getAttack() > defender.getArmor()) {
-            factor = 1 + (getAttack() - defender.getArmor()) * 0.05;
-        } else if (defender.getArmor() > getAttack()) {
-            factor = 1 - (defender.getArmor() - getAttack()) * 0.025;
-        }
-
-        return (int) (factor * dmg);
     }
 
     public int getArmor() {
@@ -63,5 +57,19 @@ public class Creature {
 
     public Range<Integer> getDamage() {
         return stats.getDamage();
+    }
+
+    public int getSpeed() {
+        return stats.getSpeed();
+    }
+
+    @Override
+    public void propertyChange(PropertyChangeEvent evt) {
+        if (evt.getPropertyName().equals(GameEngine.END_OF_TURN)) {
+            endOfTurn();
+        }
+    }
+
+    void endOfTurn() {
     }
 }
